@@ -1,41 +1,117 @@
-<div class='main'>
-  <div class='s sixty-wide'>
-    <h1 class='t-label'>Article Editor</h1>
-    <h3 class='t-label'>Title:</h3>
-    <input class='t-input' type="text" name="title" id="create-a-title">
-    <h3 class='t-label'>Content:</h3>
-    <textarea  class='t-input' id='create-a-content' name='a-content'></textarea>
-    <h3 class='t-label'>Tags:</h3>
-    <div class='t-input d-flex'>
-      <label class='t-label create-tag' for='US'>U.S.</label>
-      <input type="checkbox" name="US" id="US">
-      <label class='t-label create-tag' for='World'>World</label>
-      <input type="checkbox" name="World" id="World">
-      <label class='t-label create-tag' for='Politics'>Politics</label>
-      <input type="checkbox" name="Politics" id="Politics">
-      <label class='t-label create-tag' for='Opinion'>Opinion</label>
-      <input type="checkbox" name="Opinion" id="Opinion">
+<%- include("../partials/header.ejs") %>
+<%- include("../partials/navbar.ejs", {logged: true, writer:true}) %>
+<!-- <div class='main'> -->
+
+  <form id="image-upload" class="main" action="<%= id? `/articles/${id}/edit`:"/articles/new"%>" enctype="multipart/form-data" method="POST">
+    <div class='s sixty-wide start-top'>
+      <h1 class='t-label'>Article Editor <%= id? `(ID: ${id})` : "" %></h1>
+      <h3 class='t-label'>Title:</h3>
+      <input onkeydown="change_title()" class='t-input' type="text" name="title" id="create-a-title" value="<%= title %>">
+      <h3 id="content-head" class='t-label'>Content (<%=content ? content.length:"0"%>/1300 chars):</h3>
+      <textarea onkeydown="change_content()" class='t-input' id='create-a-content' name='content'><%= content %></textarea>
+      <h3 class='t-label'>Tags:</h3>
+      <div class='t-input d-flex'>
+        <label class='t-label create-tag' for='US'>U.S.</label>
+        <input type="checkbox" name="US" <% if (US) { %> checked <% } %> id="US">
+        <label class='t-label create-tag' for='World'>World</label>
+        <input type="checkbox" name="World" <% if (World) { %> checked <% } %> id="World">
+        <label class='t-label create-tag' for='Politics'>Politics</label>
+        <input type="checkbox" name="Politics" <% if (Politics) { %> checked <% } %> id="Politics">
+        <label class='t-label create-tag' for='Opinion'>Opinion</label>
+        <input type="checkbox" name="Opinion" <% if (Opinion) { %> checked <% } %> id="Opinion">
+      </div>
+      <input type="submit" class='t-input' id='publish' required/>
     </div>
-    <button class='t-input' id='publish'>Publish</button>
-  </div>
-  <div class='s forty-wide start-top'>
-    <h1 class='t-label'>Article Preview</h1>
-    <div class='preview-container bot-space'>
-      
+    <div class='s forty-wide start-top'>
+      <h1 class='t-label'>Article Preview</h1>
+      <div class='preview-container bot-space mini-a-container' style="max-width:100%; aspect-ratio: 16/10;">
+        <div class='mini-s'>
+          <h3 id="dat-samp"class='a-date' style="padding: 0.1rem 0; font-size: .8rem;"></h3>
+          <h1 id="tit-samp"class="a-title" style="font-size: .8rem;"></h1>
+          <h4 id="aut-samp"class='a-author' style="font-size: .8rem;">by <%= author%></h4>
+        </div>
+        <div class='mini-s'>
+          <p id="con-samp"class='a-content' style="font-size: .4rem;"></p>
+        </div>
+      </div>
+      <h1 class='t-label '>Image Slide:</h1>
+      <input value="Hello World"type='file' name="myFile" class="t-input">
+      <% if(image) {%>
+      <p class="t-label">Current image: <%= image %></p>
+      <% } %>
+      <h3 class='t-label'>Description:</h3>
+      <textarea class='t-input' name="description" id='create-a-description'><%= description %></textarea>
+      <h3 class='t-label'>Source:</h3>
+      <input value="<%= source %>" class='t-input' type="text" name="source" id="create-a-source">
+      <h2 class='t-label'>Statistics:</h2>
+      <div class='t-input'>
+        <h5 class="t-label">Views: <%= views ? views : "0" %></h5>
+        <h5 class="t-label">Unique Viewers: <%= viewers ? viewers : "0" %></h5>
+        
+      </div>
     </div>
-    <h1 class='t-label '>Image Slide:</h1>
-    <input type='file' class="t-input">
-    <h3 class='t-label'>Description:</h3>
-    <textarea  class='t-input' id='create-a-description'></textarea>
-    <h3 class='t-label'>Preview:</h3>
-    <div class='preview-container bot-space'>
-      
-    </div>
-    <h2 class='t-label'>Statistics:</h2>
-    <div class='t-input'>
-      <h5 class="t-label">Views: 0</h5>
-      <h5 class="t-label">Unique Viewers: 0</h5>
-      <h5 class="t-label">Likes: 0</h5>
-    </div>
-  </div>
-</div>
+  </form>
+<!-- </div> -->
+<script>
+  if(!document.getElementById("dat-samp").innerHTML){
+    document.getElementById("dat-samp").innerHTML = getDate()
+  }
+  function change_content(){
+    const length = document.getElementById('create-a-content').value.length
+    if(length > 1300){
+      document.getElementById('create-a-content').value= document.getElementById('create-a-content').value.substring(0,1300)
+    }
+    document.getElementById('content-head').innerHTML = `Content (${String(length)}/1300 chars):`
+    
+    
+    document.getElementById("con-samp").innerHTML = document.getElementById('create-a-content').value
+  }
+  function change_title(){
+    document.getElementById("tit-samp").innerHTML = document.getElementById('create-a-title').value
+  }
+  change_content()
+  change_title()
+  function getDate() {
+  const date = new Date();
+  const dayOfMonth = date.getDate();
+  const ordinalNumbers = {
+    1: "1st",
+    2: "2nd",
+    3: "3rd",
+    4: "4th",
+    5: "5th",
+    6: "6th",
+    7: "7th",
+    8: "8th",
+    9: "9th",
+    10: "10th",
+    11: "11th",
+    12: "12th",
+    13: "13th",
+    14: "14th",
+    15: "15th",
+    16: "16th",
+    17: "17th",
+    18: "18th",
+    19: "19th",
+    20: "20th",
+    21: "21st",
+    22: "22nd",
+    23: "23rd",
+    24: "24th",
+    25: "25th",
+    26: "26th",
+    27: "27th",
+    28: "28th",
+    29: "29th",
+    30: "30th",
+    31: "31st",
+  };
+  const ordinalDayOfMonth = ordinalNumbers[dayOfMonth];
+  const dayOfWeek = date.toLocaleDateString("en-US", { weekday: "long" });
+  const month = date.toLocaleDateString("en-US", { month: "long" });
+  const year = date.getFullYear();
+  return `${dayOfWeek}, ${month} ${ordinalDayOfMonth}, ${year}`;
+}
+</script>
+<%- include("../partials/footer.ejs") %>

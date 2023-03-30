@@ -1,47 +1,216 @@
-<div class='articles'>
-  <div class='article-container'>
-    <!-- <span class='light'></span> -->
-    <div class='s'>
-      <h3 class='a-date'>Thursday, February 23rd, 2023</h3>
-      <h1 class="a-title">The World is Dying: Climate Change is now Irreversible, Scientists Say</h1>
-      <h4 class='a-author'>by Matthew Chin</h4>
-    </div>
-    <div class='s'>
-      <p class='a-content'>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum leo quam, dignissim bibendum volutpat eu, dictum a mi. Suspendisse potenti. In accumsan arcu eget hendrerit dignissim. Aliquam erat volutpat. Quisque auctor velit eget metus imperdiet, a rhoncus metus feugiat. Sed suscipit erat euismod risus ullamcorper, et facilisis nisl porttitor. Pellentesque sagittis tristique enim ut eleifend. Cras porttitor, massa in suscipit vehicula, libero dolor ultricies enim, at convallis tortor turpis eget est. In hac habitasse platea dictumst. Pellentesque efficitur, mi ac rutrum suscipit, libero justo sagittis sapien, id sodales felis purus vel purus. </p>
-      <p class='a-content'>Mauris consequat orci ut ex molestie dignissim. Nunc nec bibendum lectus. Quisque eget nulla libero. Suspendisse potenti. Nulla porttitor, velit in luctus sollicitudin, metus neque feugiat ipsum, quis vulputate purus lacus ut odio. Suspendisse potenti. Vestibulum libero urna, ultricies aliquet vestibulum at, tincidunt eget mauris. Maecenas sed aliquet velit. Vestibulum cursus, tortor sit amet commodo vestibulum, elit dolor.</p>
-    </div>
+<%- include("../partials/header.ejs") %> 
+<%- include("../partials/navbar.ejs", {logged: true, writer: writer})%>
+<% if (weather) { %>
+  <%
+  function getDate() {
+  const date = new Date();
+  const dayOfMonth = date.getDate();
+  const ordinalNumbers = {
+    1: "1st",
+    2: "2nd",
+    3: "3rd",
+    4: "4th",
+    5: "5th",
+    6: "6th",
+    7: "7th",
+    8: "8th",
+    9: "9th",
+    10: "10th",
+    11: "11th",
+    12: "12th",
+    13: "13th",
+    14: "14th",
+    15: "15th",
+    16: "16th",
+    17: "17th",
+    18: "18th",
+    19: "19th",
+    20: "20th",
+    21: "21st",
+    22: "22nd",
+    23: "23rd",
+    24: "24th",
+    25: "25th",
+    26: "26th",
+    27: "27th",
+    28: "28th",
+    29: "29th",
+    30: "30th",
+    31: "31st",
+  };
+  const ordinalDayOfMonth = ordinalNumbers[dayOfMonth];
+  const dayOfWeek = date.toLocaleDateString("en-US", { weekday: "long" });
+  const month = date.toLocaleDateString("en-US", { month: "long" });
+  const year = date.getFullYear();
+  return `${dayOfWeek}, ${month} ${ordinalDayOfMonth}, ${year}`;
+}
+  %>
+  <div id="weather-report" style="align-items: center; justify-content: space-between; width: 100vw; padding: .2rem 3rem; background-color: rgb(100,100,100); top: 4.5rem;" class="navbar navbar-dark bg-dark fixed-top d-flex">
+    <p></p>
+    <p class='a-title'><%= getDate()%> - NYC Weather: <%= weather%></p>
+    <button onclick="document.getElementById('weather-report').style.display='none'; document.getElementById('weather-report').style.visibility='hidden'; " type="button" class="btn-close btn-close-white text-reset" aria-label="Close"></button>
   </div>
+<% } %>
 
-  <div class='article-container'>
-    <!-- <span class='light'></span> -->
-    <div class='s'>
-      <p class='a-content'>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum leo quam, dignissim bibendum volutpat eu, dictum a mi. Suspendisse potenti. In accumsan arcu eget hendrerit dignissim. Aliquam erat volutpat. Quisque auctor velit eget metus imperdiet, a rhoncus metus feugiat. Sed suscipit erat euismod risus ullamcorper, et facilisis nisl porttitor. Pellentesque sagittis tristique enim ut eleifend. Cras porttitor, massa in suscipit vehicula, libero dolor ultricies enim, at convallis tortor turpis eget est. In hac habitasse platea dictumst. Pellentesque efficitur, mi ac rutrum suscipit, libero justo sagittis sapien, id sodales felis purus vel purus. </p>
-      <p class='a-content'>Mauris consequat orci ut ex molestie dignissim. Nunc nec bibendum lectus. Quisque eget nulla libero. Suspendisse potenti. Nulla porttitor, velit in luctus sollicitudin, metus neque feugiat ipsum, quis vulputate purus lacus ut odio. Suspendisse potenti. Vestibulum libero urna, ultricies aliquet vestibulum at, tincidunt eget mauris. Maecenas sed aliquet velit. Vestibulum cursus, tortor sit amet commodo vestibulum, elit dolor.</p>
+<% if ((articles.length==0)) { %>
+  <h1 style="margin-top:20rem;"class='center d-flex a-title bot-space'>No Articles Yet</h1>
+  
+<% }%>
+
+<div id="articles" class="articles">
+  
+  
+  <% let flip = true%> <%for(const article of articles){%> <% flip = !flip %> <%
+  if(flip){ %>
+  <div class="article-container">
+    <div class="s">
+      <h3 class="a-date"><%=article.date%></h3>
+      <h1 class="a-title"><%=article.title%></h1>
+      <h4 class="a-author">By <%=article.author%></h4>
     </div>
-    <div class='s'>
-      <h3 class='a-date'>Thursday, February 23rd, 2023</h3>
-      <h1 class="a-title">The World is Dying: Climate Change is now Irreversible, Scientists Say</h1>
-      <h4 class='a-author'>by Matthew Chin</h4>
-    </div>
-  </div>
-  <div class='article-container'>
-    <img class='a-image' src="src/images/0.png">
-    <div class='s'>
-      <h3 class='a-title'>The World is Dying: Climate Change is now Irreversible, Scientists Say</h3>
-      <h4 class='a-author'>A quick description of what this image is showing and how it is relevant.</h4>
-      <h6 class='a-source'>Source: source name</h6>
-    </div>
-  </div>
-  <div class='article-container'>
-    <!-- <span class='light'></span> -->
-    <div class='s'>
-      <h3 class='a-date'>Thursday, February 23rd, 2023</h3>
-      <h1 class="a-title">The World is Dying: Climate Change is now Irreversible, Scientists Say</h1>
-      <h4 class='a-author'>by Matthew Chin</h4>
-    </div>
-    <div class='s'>
-      <p class='a-content'>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum leo quam, dignissim bibendum volutpat eu, dictum a mi. Suspendisse potenti. In accumsan arcu eget hendrerit dignissim. Aliquam erat volutpat. Quisque auctor velit eget metus imperdiet, a rhoncus metus feugiat. Sed suscipit erat euismod risus ullamcorper, et facilisis nisl porttitor. Pellentesque sagittis tristique enim ut eleifend. Cras porttitor, massa in suscipit vehicula, libero dolor ultricies enim, at convallis tortor turpis eget est. In hac habitasse platea dictumst. Pellentesque efficitur, mi ac rutrum suscipit, libero justo sagittis sapien, id sodales felis purus vel purus. </p>
-      <p class='a-content'>Mauris consequat orci ut ex molestie dignissim. Nunc nec bibendum lectus. Quisque eget nulla libero. Suspendisse potenti. Nulla porttitor, velit in luctus sollicitudin, metus neque feugiat ipsum, quis vulputate purus lacus ut odio. Suspendisse potenti. Vestibulum libero urna, ultricies aliquet vestibulum at, tincidunt eget mauris. Maecenas sed aliquet velit. Vestibulum cursus, tortor sit amet commodo vestibulum, elit dolor.</p>
+    <div class="s">
+      <p class="a-content"><%=article.content%></p>
     </div>
   </div>
+  <% }else{ %>
+  <div class="article-container">
+    <div class="s">
+      <p class="a-content"><%=article.content%></p>
+    </div>
+    <div class="s">
+      <h3 class="a-date"><%=article.date%></h3>
+      <h1 class="a-title"><%=article.title%></h1>
+      <h4 class="a-author">By <%=article.author%></h4>
+    </div>
+  </div>
+  <% } %> <% if((article.image)){ %> <% flip = !flip %> <% if(flip) { %>
+  <div class="article-container">
+    <div class="s">
+      <h3 class="a-title"><%=article.title%></h3>
+      <h4 class="a-author"><%=article.description%></h4>
+      <h6 class="a-source">Source: <%=article.source%></h6>
+    </div>
+    <img class="a-image" src="<%=article.image%>" />
+  </div>
+  <% } else { %>
+  <div class="article-container">
+    <img class="a-image" src="<%=article.image%>" />
+    <div class="s">
+      <h3 class="a-title"><%=article.title%></h3>
+      <h4 class="a-author"><%=article.description%></h4>
+      <h6 class="a-source">Source: <%=article.source%></h6>
+    </div>
+  </div>
+  <% } %> <% } %> <%} %>
 </div>
+<script>
+  if(<%=infinite%>){
+    let side = <%= !flip %>
+    window.onscroll = function (ev) {
+      if (window.innerHeight + window.pageYOffset >= document.body.offsetHeight) {
+        const url = window.location.href.split("type=");
+        let type;
+        if (url.length > 1) {
+          type = url[1];
+          const response = fetch("/articles/updateFeed?type="+type, {
+            method: "GET", // *GET, POST, PUT, DELETE, etc.
+            credentials: "same-origin", // include, *same-origin, omit
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }).then((response) => {
+            return response.json();
+          }).then((r)=>{loadArticle(r)}).catch(()=>{console.log('Error')});
+        } else {
+          const response = fetch("/articles/updateFeed", {
+            method: "GET", // *GET, POST, PUT, DELETE, etc.
+            credentials: "same-origin", // include, *same-origin, omit
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }).then((response) => {
+            return response.json();
+          }).then((r)=>{loadArticle(r)}).catch(()=>{console.log('Error')});
+        }
+      }
+    };
+    function loadArticle(articles){
+      for(const article of articles){
+        const articleDiv = document.createElement('div')
+        const s1 = document.createElement('div'), s2 = document.createElement('div');
+        const dateElement = document.createElement('h3'), titleElement = document.createElement('h1'), authorElement = document.createElement('h4')
+
+
+        const contentElement = document.createElement('p')
+        contentElement.innerHTML = article.content
+        contentElement.classList.add('a-content')
+        
+        articleDiv.classList.add('article-container')
+        s1.classList.add('s')
+        s2.classList.add('s')
+
+        dateElement.classList.add('a-date')
+        titleElement.classList.add('a-title')
+        authorElement.classList.add('a-author')
+        
+        dateElement.innerHTML = article.date
+        titleElement.innerHTML = article.title
+        authorElement.innerHTML = "By " + article.author
+
+        let left, right;
+        if(side){
+          left = s1, right = s2
+        }else{
+          right = s1, left = s2
+        }
+        side = !side
+
+        left.appendChild(dateElement)
+        left.appendChild(titleElement)
+        left.appendChild(authorElement)
+
+        
+        right.appendChild(contentElement)
+
+        articleDiv.appendChild(s1)
+        articleDiv.appendChild(s2)
+
+        document.getElementById('articles').appendChild(articleDiv)
+
+        if(article.image){
+          const newDiv = document.createElement('div')
+          const s3 = document.createElement('div')
+          const titElement = document.createElement('h3')
+          const desElement = document.createElement('h4')
+          const souElement = document.createElement('h6')
+          const image = document.createElement('img')
+          image.setAttribute('src', article.image)
+          image.classList.add('a-image')
+          titElement.innerHTML = article.title
+          desElement.innerHTML = article.description
+          souElement.innerHTML = "Source: " +  article.source
+          titElement.classList.add('a-title')
+          desElement.classList.add('a-author')
+          souElement.classList.add('a-source')
+          newDiv.classList.add('article-container')
+          s3.classList.add('s')
+          let left, right;
+          if(side){
+            left = s3, right = image
+          }else{
+            right = s3, left = image
+          }
+          s3.appendChild(titElement)
+          s3.appendChild(desElement)
+          s3.appendChild(souElement)
+          newDiv.appendChild(left)
+          newDiv.appendChild(right)
+          document.getElementById('articles').appendChild(newDiv)
+          side = !side
+        }
+        
+      }
+    }
+  }
+</script>
+<%- include("../partials/footer.ejs") %>

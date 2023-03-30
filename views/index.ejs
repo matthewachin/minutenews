@@ -1,8 +1,7 @@
-<%- include('partials/header', {title:"P, R, S: Tournament of Champions"}) -%>
-
-<p> Welcome to the official site of the Paper, Rock, Scissors: Tournament of Champions!
-  <br>
-  <br>
-  <a href="/play">Click to play a round of Paper, Rock, Scissors</a>
-
-  <%- include('partials/footer') -%>
+<%- include("partials/header.ejs") %>
+<%- include("partials/navbar.ejs", {logged: false, writer: writer}) %>
+<div class="main col center">
+  <h1 class="a-title">News Flash</h1>
+  <button class='t-input' style="width: 12rem;" onclick="window.location.href = '/auth/google'">Get Started</button>
+</div>
+<%- include("partials/footer.ejs") %>

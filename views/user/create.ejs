@@ -1,0 +1,9 @@
+<%- include("../partials/header.ejs") %>
+<%- include("../partials/navbar.ejs", {logged: true, writer:writer}) %>
+<div class="main center " style="margin:40vh 0;">
+  <form method="POST" action="/users/new" >
+    <input class="t-input" type="text" id='username' name="username" placeholder="Username" >
+    <button class="t-input"type="submit">Submit</button>
+  </form>
+</div>
+<%- include("../partials/footer.ejs") %>

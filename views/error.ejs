@@ -1,6 +1,9 @@
-<%- include('partials/header', {title:"P, R, S: High Scores"}) -%>
-
-<h2> <%=errorCode%> Error</h2>
-<p> The resource you requested has not been found.</p>
+<%- include('partials/header') -%>
+<%- include("partials/navbar.ejs", {logged: false, writer: writer}) %>
+<div class="main center full col">
+  <h1 class='a-title'>News Flash</h1>
+  <h4 class='a-title'> <%=errorCode%> Error: <%=details%></h4>
+  <button class="t-input forty-wide" onclick="window.location.href='/'">Return to safety</button>
+</div>
 
 <%- include('partials/footer') -%>

@@ -1,31 +1,150 @@
+<%- include("../partials/header.ejs") %>
+<%- include("../partials/navbar.ejs", {logged: true, writer:true}) %>
 <div class='main'>
   <div class='col center'>
-    <h1 class='a-title bot-space'>Your Articles</h1>
-    <table class="a-tab">
+    <% if(!global){%>
+      <h1 class='a-title bot-space'>Your Articles</h1>
+    <% }else{ %>
+      <h1 class='a-title bot-space'>Article Priority</h1>
+      <h6 class='a-author bot-space' id="feedback"></h6>
+    <% } %>
+    <table class="a-tab" id="myTable">
       <tr class='top-row'>
+        <td class='tab-head t-label'>ID</td>
         <td class='tab-head t-label'>Name</td>
         <td class='tab-head t-label'>Publish Date</td>
-        <td class='tab-head t-label'>View Count</td>
+        <td class='tab-head t-label'>Unique Viewers</td>
+        
         <td class='tab-head t-label'>Options</td>
       </tr>
-      <tr>
-        <td class='tab-reg t-label'>The World is Dying: Climate...</td>
-        <td class='tab-reg t-label'>02/23/23</td>
-        <td class='tab-reg t-label'>23</td>
-        <td class='tab-reg t-label'>Edit Delete</td>
-      </tr>
-      <tr>
-        <td class='tab-reg t-label'>The World is Dying: Climate...</td>
-        <td class='tab-reg t-label'>02/23/23</td>
-        <td class='tab-reg t-label'>23</td>
-        <td class='tab-reg t-label'>Edit Delete</td>
-      </tr>
-      <tr>
-        <td class='tab-reg t-label'>The World is Dying: Climate...</td>
-        <td class='tab-reg t-label'>02/23/23</td>
-        <td class='tab-reg t-label'>23</td>
-        <td class='tab-reg t-label'>Edit Delete</td>
-      </tr>
+      
+      <%for(let i= 0; i < data.length; i++){%>
+        <% const item = data[i] %>
+        <tr>
+          <td class='tab-reg t-label'><%= item.id %></td>
+          <td class='tab-reg t-label'><%= item.title %></td>
+          <td class='tab-reg t-label'><%= item.published %></td>
+          <td class='tab-reg t-label'><%= item.viewers %></td>
+          
+          <% if(!global){%>
+            <td class='tab-reg t-label'>
+              <button onclick="window.location.href = '/articles/<%=item.id%>/edit'" class="myButton">Edit</button>
+              <button class="myButton" onclick="deleteArticle(`<%=(item.id)%>`)">Delete</button>
+            </td>
+          <% }else{ %>
+            <td class='tab-reg t-label'>
+              <button class="myButton" onclick="moveRowUp(this)">Up</button>
+              <button class="myButton" onclick="moveRowDown(this)">Down</button>
+            </td>
+          <% } %>
+          
+        </tr>
+      <% }%>
     </table>
+    <% if(global){%>
+      <button onclick="save()" class="t-input">Save Changes</button>
+    <% }%>
   </div>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script>
+    function deleteArticle(id){
+      fetch(`/articles/${id}/delete`, { method: 'DELETE' })
+      window.location.href = "/articles/menu"
+    }
+    function moveRowUp(button) {
+      var row = button.parentNode.parentNode
+      var previousRow = row.previousElementSibling
+      if (previousRow) { 
+        row.parentNode.insertBefore(row, previousRow)
+      }
+    }
+
+    function moveRowDown(button) {
+      var row = button.parentNode.parentNode
+      var nextRow = row.nextElementSibling
+      if (nextRow) { 
+        row.parentNode.insertBefore(nextRow, row)
+      }
+    }
+    function save(){
+      const table = document.getElementById('myTable')
+      let data = []
+      
+      for (var i = 1; i < table.rows.length; i++) { 
+        var row = table.rows[i]
+        var cell = row.cells[0]
+        data.push(cell.textContent)
+      }
+      const response = fetch('/articles/order', {
+        method: 'POST',
+        headers: {
+          'Content-Type' : 'application/json',
+        },
+        body: JSON.stringify(data.reverse()),
+      })
+      .then((response)=>response.json())
+      .then((data) => {
+        console.log('SERVER RESPONSE:', data);
+        document.getElementById('feedback').innerHTML = data
+      })
+      .catch((error) => {
+        console.error('SERVER RESPONSE (ERROR):', error);
+      });
+    }
+
+   
+  //   function moveRowUp(rowIndex) {
+     
+  //     var table = document.getElementById('myTable');
+
+      
+  //     if (rowIndex === 1) {
+  //       return;
+  //     }
+
+      
+  //     var currentRow = table.rows[rowIndex];
+  //     var previousRow = table.rows[rowIndex - 1];
+  //     table.insertBefore(currentRow, previousRow);
+
+      
+  //     currentRow.rowIndex--;
+  //     previousRow.rowIndex++;
+  //   }
+  //   function moveRowDown(rowIndex) {
+  //    var table = document.getElementById('myTable');
+  //    if (rowIndex === table.rows.length - 1) {
+  //      return;
+  //    }
+  //    var currentRow = table.rows[rowIndex];
+  //    var previousRow = table.rows[rowIndex - 1];
+  //    table.insertBefore(previousRow, currentRow);
+  //    currentRow.rowIndex++;
+  //    previousRow.rowIndex--;
+  //  }
+    
+    function setButtons(){
+      Array.from(document.getElementsByClassName('upButton')).forEach((e, i)=>{
+        e.addEventListener('click', (event)=>{
+          console.log(event.target)
+          console.log(event)
+          // const r = event.target.rowIndex
+          // console.log(event.target)
+          // console.log(event.target.rowIndex)
+          // document.querySelector(`tbody tr:nth-child(${String(r)})`).insertAdjacentElement("afterend", document.querySelector(`tbody tr:nth-child(${String(r-1)})`));
+        })
+      })
+      Array.from(document.getElementsByClassName('downButton')).forEach((e, i)=>{
+        e.addEventListener('click', (event)=>{
+          const r = event.target.rowIndex
+          document.querySelector(`tbody tr:nth-child(${String(r-1)})`).insertAdjacentElement("afterend", document.querySelector(`tbody tr:nth-child(${String(r)})`));
+        })
+      })
+    }
+    let globalVar = Boolean(`<%=global%>`)
+    if(globalVar){
+      setButtons()
+    }
+  </script>
 </div>
+<%- include("../partials/footer.ejs") %>

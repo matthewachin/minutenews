@@ -1,0 +1,33 @@
+<%- include("../partials/header.ejs") %>
+<%- include("../partials/navbar.ejs", {logged: true, writer:true}) %>
+<div class='main'>
+  <div class='col center'>
+    <h1 class='a-title bot-space'>All Users</h1>
+    <table class="a-tab">
+      <tr class='top-row'>
+        <td class='tab-head t-label'>ID</td>
+        <td class='tab-head t-label'>Name</td>
+        <td class='tab-head t-label'>Writer</td>
+        <td class='tab-head t-label'>Options</td>
+      </tr>
+      <% for(let i = 0; i < users.length; i++){ %>
+        <tr>
+          <td class='tab-reg t-label'><%= users[i].id %></td>
+          <td class='tab-reg t-label'><%= users[i].username %></td>
+          <td class='tab-reg t-label'><%= users[i].isWriter ? "TRUE" : "FALSE" %></td>
+          <td class='tab-reg t-label'><button onclick="toggleWriter(`<%= users[i].id %>`)" class="myButton">Toggle Writer</button></td>
+        </tr>
+      <% } %>
+    </table>
+  </div>
+  <script>
+    function toggleWriter(id){
+      fetch(`/users/${id}/writer`, { method: 'PUT' }).then(()=>{
+        window.location.href="/users"
+      }).catch((error)=>{
+        window.location.href = "/users"
+      })
+    }
+  </script>
+</div>
+<%- include("../partials/footer.ejs") %>
